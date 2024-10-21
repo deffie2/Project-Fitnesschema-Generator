@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+
+    <div class="profile-container">
+        <div class="profile-box" id="profile-box1">
+            {% if get_flashed_messages() %}
+            <div class="alert alert-primary mb-0 text-center" role="alert">
+                {{ get_flashed_messages() | join(" ") }}
+            </div>
+            {% endif %}
+            {% if profile_found %}
+            <h2>Wijzig je profiel</h2>
+            {% else %}
+            <h2>Maak een profiel</h2>
+            {% endif %}
+            <div class="container-outer">
+                <form method="POST" action="/profile">
+                    <div class="form-group">
+                        <label for="name">Naam</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Leeftijd</label>
+                        <input type="number" class="form-control" id="age" name="age">
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Gewicht (kg)</label>
+                        <input type="number" class="form-control" id="weight" name="weight">
+                    </div>
+                    <div class="form-group">
+                        <label for="height">Lengte (cm)</label>
+                        <input type="number" class="form-control" id="height" name="height">
+                    </div>
+                    <div class="form-group">
+                        <label for="experience_level">Ervaringsniveau</label>
+                        <select class="form-control" id="experience_level" name="experience_level">
+                            <option value="" selected disabled>Kies een ervaringsniveau</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Semi-gevorderd">Semi-gevorderd</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal">Doel</label>
+                        <select class="form-control" id="goal" name="goal">
+                            <option value="" selected disabled>Kies een doel</option>
+                            <option value="Kracht">Kracht</option>
+                            <option value="Spiermassa Opbouwen">Spiermassa Opbouwen</option>
+                            <option value="Conditie">Conditie</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal_string">Beschrijf je fitnesdoelen!</label>
+                        <textarea class="form-control" id="goal_string" name="goal_string" rows="3"></textarea>
+                    </div>
+                    {% if profile_found %}
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary">Profiel Toevoegen</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        <div class="profile-column">
+            <div class="profile-box" id="profile-box2">
+                {% if profile %}
+                    <h2>Profiel</h2>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            {% if profile.name %}
+                                {% if profile.age %}
+                                    <h5 class="card-title">{{ profile.name }} ({{ profile.age }} jaar)</h5>
+                                {% else %}
+                                    <h5 class="card-title">{{ profile.name }}</h5>
+                                {% endif %}
+                            {% else %}
+                                {% if profile.age %}
+                                    <h5 class="card-title">Leeftijd: {{ profile.age }} jaar</h5>
+                                {% else %}
+                                    <h5 class="card-title">Naam: Leeftijd: </h5>
+                                {% endif %}
+                            {% endif %}
+                            {% if profile.weight %}
+                                <p>Gewicht: {{ profile.weight }} kg</p>
+                            {% else %}
+                                <p>Gewicht: </p>
+                            {% endif %}
+
+                            {% if profile.height %}
+                                <p>Lengte: {{ profile.height }} cm</p>
+                            {% else %}
+                                <p>Lengte: </p>
+                            {% endif %}
+                            {% if profile.experience_level %}
+                                <p>Ervaringsniveau: {{ profile.experience_level }}</p>
+                            {% else %}
+                                <p>Ervaringsniveau: </p>
+                            {% endif %}
+                            {% if profile.goal %}
+                                <p>Doel: {{ profile.goal }}</p>
+                            {% else %}
+                                <p>Doel: </p>
+                            {% endif %}
+                            <p>Verwachtingen: {{ profile.goal_string }}</p>
+                            <form action="{{ url_for('delete_profile', id=profile.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Verwijder</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <h2>Voeg een profiel toe</h2>
+                {% endif %}
+            </div>
+            <div class="profile-box" id="profile-box3">
+                <h2 class="mt-5">Fitnesschemas</h2>
+                <ul class="list-group">
+                    {% if profile.fitnesschemas %}
+                        {% for fitnesschema in profile.fitnesschemas %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('show_fitnesschema', id=fitnesschema.id) }}">Fitnesschema {{ fitnesschema.id }}</a>
+                            <form action="{{ url_for('delete_fitnesschema', id=fitnesschema.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Verwijder</button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item">Geen fitnesschema's gevonden</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+

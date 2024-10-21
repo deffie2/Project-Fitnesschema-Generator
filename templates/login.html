@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block sidebar %}
+
+    {% if get_flashed_messages() %}
+    <div class="alert alert-primary mb-0 text-center" role="alert">
+        {{ get_flashed_messages() | join(" ") }}
+        <br>
+    </div>
+    {% endif %}
+    <form action="/login" method="post">
+        <div class="mb-3">
+            <label for="username">Gebruikersnaam:</label>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Gebruikersnaam" type="text">
+        </div>
+        <div class="mb-3">
+            <label for="password">Wachtwoord:</label>
+            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Wachtwoord" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Log uit</button>
+    </form>
+
+{% endblock %}
+
+{% block flash_messages %}{% endblock %}
+
+
+

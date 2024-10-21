@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Homepagina
+{% endblock %}
+
+{% block main %}
+
+    <div class="info-container">
+        <div class="info-box" id="info-box1">
+            <div class="container-fluid py-5">
+                <div class="text-center">
+                    <h1>Welcome to Fitness Schema Generator</h1>
+                </div>
+                <div class="text-start mt-5">
+                    <p class="text-start">
+                        Deze website genereert fitnessschema's voor vrouwen vanaf 18 jaar, zowel beginners als semi-gevorderden. De generator bevat 180 fitnessschema's. 
+                        De schema's zijn gericht op verschillende doelen, zoals het verbeteren van je conditie, spieropbouw en kracht. Daarnaast kun je kiezen 
+                        of de oefeningen een combinatie van oefeningen met en zonder machines moeten zijn, alleen oefeningen met machines, en/of alleen oefeningen 
+                        zonder machines. Je kunt ook kiezen hoeveel dagen per week je wilt trainen. Ten slotte is er een optie om het soort trainingsschema te kiezen: 
+                        full body, splitschema, upper body, lower body, en push/pull/legs-schema.
+                    </p>
+                    <p>
+                        Deze site biedt de volgende mogelijkheden:
+                    </p>
+                    <ul>
+                        <li>Opslaan van gepersonaliseerde schema's in je profiel.</li>
+                        <li>Bekijken en verwijderen van al je opgeslagen gepersonaliseerde schema's in je profiel.</li>
+                        <li>Aanmaken en beheren van je persoonlijke profiel.</li>
+                        <li>Meer informatie over fitnessen en fitnessschema's.</li>
+                        <li>Instructies voor de oefeningen, inclusief links naar GIF's voor de uitvoering.</li>
+                        <li>Gedetailleerde sets: Specifieke informatie over het aantal herhalingen en sets voor elke oefening.</li>
+                        <li>Overwegingen: Aanbevelingen en tips voor het uitvoeren van de oefeningen, zoals het juiste gewicht kiezen en het belang van rustperiodes.</li>
+                    </ul>
+                    <p>
+                        Klik op <a href="/fitnesschema_form">Fitnesschema Genereren</a> boven in de balk om het avontuur te starten.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block flash_messages %}{% endblock %}
+
+{% block sidebar %}
+
+    {% if get_flashed_messages() %}
+    <div class="alert alert-primary mb-0 text-center" role="alert">
+        {{ get_flashed_messages() | join(" ") }}
+    </div>
+    {% endif %}
+    <br>
+    {% if session["user_id"] %}
+    <p>Welcome, {{ session["user_name"] }}</p>
+    <form action="/logout" id="logoutForm">
+        <button type="submit">Log uit</button>
+    </form>
+    {% else %}
+    <h2>Login</h2>
+    <form action= "/login" method="post" id="loginForm">
+        <label for="username">Gebruikersnaam:</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="password">Wachtwoord:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Log in</button>
+    </form>
+    <a href="/register"><button id="registerBtn">Register</button>
+    {% endif %}
+
+{% endblock %}

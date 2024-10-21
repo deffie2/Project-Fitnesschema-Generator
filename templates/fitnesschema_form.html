@@ -1,0 +1,221 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Fitnesschema
+{% endblock %}
+
+{% block main %}
+
+    <div class="fitness-form">
+        <div class="fitness-form_box" id="fitness-form_box1">
+            <h1 id="title"> Genereer een Fitnesschema</h1>
+            <p id="description"> Vul de vragen in om je persoonlijke fitnessprogramma te genereren.</p>
+            {% if not profile_found %}
+                <p class="profile-not-found">Maak eerst een profiel aan voordat je een fitnesschema gaat genereren.</p>
+            {% endif %} 
+            <form action="/fitnesschema_form" method="post" id="fitness-form">
+                {% if get_flashed_messages() %}
+                    <div class="alert alert-primary mb-0 text-center" role="alert">
+                        {{ get_flashed_messages() | join(" ") }}
+                    </div>
+                    <br>
+                {% endif %}
+                <div class="input-element">
+                    <label>1. Wat is je doel?</label>
+                    <div>
+                        <label><input type="radio" name="goal" value="Kracht" onclick="showQuestions()">Kracht</label>
+                    </div>
+                    <div>
+                        <label><input type="radio" name="goal" value="Spieropbouw" onclick="showQuestions()">Spieropbouw</label>
+                    </div>
+                    <div>
+                        <label><input type="radio" name="goal" value="Conditie" onclick="showQuestions()">Conditie</label>
+                    </div>
+                </div>
+                <div class="input-element">
+                    <label>2. Wat is je niveau?</label>
+                    <div>
+                        <label><input type="radio" name="level" value="Beginner" onclick="showQuestions()">Beginner</label>
+                    </div>
+                    <div>
+                        <label><input type="radio" name="level" value="Semi-gevorderd" onclick="showQuestions()">Semi-gevorderd</label>
+                    </div>
+                </div>
+                <div id="krachtQuestions" class="input-element">
+                    <label>3. Wat voor soort oefeningen wil je doen in het krachtgedeelte?</label>
+                    <div id="krachtQuestions1">
+                        <label><input type="radio" name="krachtOef" value="Combinatie van oefeningen met en zonder machines." onclick="showQuestions()"/>Combinatie van oefeningen met en zonder machines.</label>
+                    </div>
+                    <div id="krachtQuestions2">
+                        <label><input type="radio" name="krachtOef" value="Alleen oefeningen met machines." onclick="showQuestions()"/>Alleen oefeningen met machines.</label>
+                    </div>
+                    <div id="krachtQuestions3">
+                        <label><input type="radio" name="krachtOef" value="Alleen oefeningen zonder machines." onclick="showQuestions()"/>Alleen oefeningen zonder machines.</label>
+                    </div>
+                    <div id="krachtQuestions4">
+                        <label><input type="radio" name="krachtOef" value="Geen optie." onclick="showQuestions()"/>Geen optie.</label>
+                    </div>
+                </div>
+                <div id="cardioQuestions" class="input-element">
+                    <label>4. Wat voor soort oefeningen wil je doen voor cardio?</label>
+                    <div>
+                        <label><input type="radio" name="cardioOef" value="Combinatie van oefeningen met en zonder machines." onclick="showQuestions()"/>Combinatie van oefeningen met en zonder machines.</label>
+                    </div>
+                    <div>
+                        <label><input type="radio" name="cardioOef" value="Alleen oefeningen met machines." onclick="showQuestions()"/>Alleen oefeningen met machines.</label>
+                    </div>
+                    <div>
+                        <label><input type="radio" name="cardioOef" value="Alleen oefeningen zonder machines." onclick="showQuestions()"/>Alleen oefeningen zonder machines.</label>
+                    </div>
+                </div>
+                <div id="daysQuestion" class="input-element">
+                    <label for="dropdown">5. Hoeveel dagen in de week wil je trainen?</label>
+                    <select id="dropdown" name="days" onchange="showQuestions()">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <div id="schemaQuestions" class="input-element hidden">
+                    <label for="schemas">6. Wat voor soort trainingschema ben je geïnteresseerd in?</label>
+                    <select id="schemas" name="schema" onchange="showQuestions()">
+                        <option value="Full body">Full body</option>
+                        <option value="Splitschema">Splitschema</option>
+                        <option value="Upper body en lower body">Upper body en lower body</option>
+                        <option value="Push/pull/legsschema">Push/pull/legsschema</option>
+                        <option value="Geen optie">Geen optie</option>
+                    </select>
+                </div>
+                <button type="submit" id="submit">Submit</button>
+            </form>
+            <script>
+                function showQuestions() {
+                    const form = document.getElementById('fitness-form');
+                    const goal = form.querySelector('input[name="goal"]:checked');
+                    const level = form.querySelector('input[name="level"]:checked');
+                    const krachtOef = form.querySelector('input[name="krachtOef"]:checked');
+                    const cardioOef = form.querySelector('input[name="cardioOef"]:checked');
+                    const krachtQuestions = document.getElementById('krachtQuestions');
+                    const krachtQuestions1 = document.getElementById('krachtQuestions1');
+                    const krachtQuestions2 = document.getElementById('krachtQuestions2');
+                    const krachtQuestions3 = document.getElementById('krachtQuestions3');
+                    const krachtQuestions4 = document.getElementById('krachtQuestions4');
+                    const schemaQuestions = document.getElementById('schemaQuestions');
+                    const daysQuestion = document.getElementById('daysQuestion');
+                    const dropdown = document.getElementById('dropdown');
+                    const days = form.querySelector('select[name="days"]').value;
+                    const schemas = document.getElementById('schemas');
+
+                    // Modify krachtOef-menu based on the goal
+                    if (goal && goal.value === 'Conditie') {
+                        krachtQuestions.style.display = 'block';
+                        krachtQuestions1.style.display = 'none';
+                        krachtQuestions2.style.display = 'none';
+                        krachtQuestions3.style.display = 'none';
+                        krachtQuestions4.style.display = 'block';
+                    } else if (goal && (goal.value === 'Kracht' || goal.value === 'Spieropbouw')) {
+                        krachtQuestions.style.display = 'block';
+                        krachtQuestions1.style.display = 'block';
+                        krachtQuestions2.style.display = 'block';
+                        krachtQuestions3.style.display = 'block';
+                        krachtQuestions4.style.display = 'none';
+                    } else {
+                        krachtQuestions.style.display = 'none';
+                    }
+
+                    // Check if all questions 1 to 4 are filled in
+                    if (goal && level && cardioOef) {
+                        schemaQuestions.style.display = 'block';
+                    } else {
+                        schemaQuestions.style.display = 'none';
+                    }
+                    
+                    // Get the selected value from the dropdown
+                    let selectedValue = dropdown.value;
+                    let selectedSchema = schemas.value; 
+
+                    // Modify the dropdown menu based on goal and level.
+                    if (goal.value === 'Kracht') {
+                        if (level.value === 'Beginner') {
+                            dropdown.innerHTML = `
+                                <option value="1">1</option>
+                                <option value="2">2</option>`;
+                        } else if (level.value === 'Semi-gevorderd') {
+                            dropdown.innerHTML = `
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>`;
+                        }
+                    } else if (goal.value === 'Spieropbouw') {
+                        if (level.value === 'Beginner') {
+                            dropdown.innerHTML = `
+                                <option value="1">1</option>
+                                <option value="2">2</option>`;
+                        } else if (level.value === 'Semi-gevorderd') {
+                            dropdown.innerHTML = `
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>`;
+                        } 
+                    } else if (goal.value === 'Conditie') {
+                        if (level.value === 'Beginner') {
+                            dropdown.innerHTML = `
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>`;
+                        } else if (level.value === 'Semi-gevorderd') {
+                            dropdown.innerHTML = `
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>`;
+                            } 
+                    }
+
+                    // Set the dropdown value to the selected value
+                    dropdown.value = selectedValue; 
+
+                    // Modify the dropdown menu based on goal and level for training schedule
+                    if ( goal && level && days) {
+                        if (goal.value === 'Conditie' && (level.value === 'Beginner' || level.value === 'Semi-gevorderd')) {
+                            schemas.innerHTML = `
+                                <option value="Geen optie">Geen optie</option>`;
+                        }
+                        else if ((goal.value === 'Kracht' || goal.value === 'Spieropbouw') && level.value === 'Beginner') {
+                            schemas.innerHTML = `
+                                <option value="Full body">Full body</option>`;
+                        }
+                        else if ((goal.value === 'Kracht' || goal.value === 'Spieropbouw') && level.value === 'Semi-gevorderd' && dropdown.value === "2") {
+                            schemas.innerHTML = `
+                                <option value="Full body">Full body</option>
+                                <option value="Upper body en lower body">Upper body en lower body</option>`;
+                        }
+                        else if ((goal.value === 'Kracht' || goal.value === 'Spieropbouw') && level.value === 'Semi-gevorderd' && dropdown.value === "3") {
+                            schemas.innerHTML = `
+                                <option value="Full body">Full body</option>
+                                <option value="Splitschema">Splitschema</option>
+                                <option value="Push/pull/legsschema">Push/pull/legsschema</option>`;
+                        }
+                        else if ((goal.value === 'Kracht' || goal.value === 'Spieropbouw') && level.value === 'Semi-gevorderd' && dropdown.value === "4") {
+                            schemas.innerHTML = `
+                                <option value="Full body">Full body</option>
+                                <option value="Upper body en lower body">Upper body en lower body</option>`;
+                        }
+                    }
+
+                    // Set the value of schemas to the selected schema
+                    schemas.value = selectedSchema;
+                }
+
+                // Add event listeners for dropdown and schemas on DOMContentLoaded event
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.getElementById('dropdown').addEventListener('change', showQuestions);
+                    document.getElementById('schemas').addEventListener('change', showQuestions);
+                });
+            </script>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block flash_messages %}{% endblock %}

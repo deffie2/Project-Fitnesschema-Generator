@@ -1,0 +1,431 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Fitnesschema
+{% endblock %}
+
+{% block main %}
+    <style>
+        .table1 {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .table1 th, .table1 td {
+        border: 4px solid black;
+        padding: 8px;
+        }
+
+        .table1 thead tr {
+            background-color: rgb(221, 30, 30);
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.7em;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        ul li {
+            margin-bottom: 0;
+            font-size: 1em;
+        }
+
+        .table1 th
+        .table1 td {
+            padding: 12px 15px;
+        }
+
+        .table1 tbody tr:nth-of-type(even) {
+            background-color: lightgray;
+        }
+
+        .table2 {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .table2 th, .table2 td {
+        border: 4px solid black;
+        padding: 8px;
+        }
+
+        .table2 th
+        .table2 td {
+            padding: 12px 15px;
+        }
+
+        .table2 tbody tr:nth-of-type(odd) {
+            background-color: lightgray;
+        }
+
+        .table3 {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .table3 thead tr {
+            background-color: lightgrey;
+        }
+
+        .table3 th, .table3 td {
+        border: 4px solid black;
+        padding: 8px;
+        }
+    </style>
+
+    <div class="fitness-schema container" style="display: flex; justify-content: space-around;">
+        <div class="fitness-schema_box" id="fitness-schema_box1"  padding: 20px; margin: 20px 0; overflow: hidden; width: 1000px; font-size: 1em; text-align: center; border-radius: 15px;>
+            <br>
+            <h1 style="text-align: center;">Fitnesschema <span style="font-size: smaller;">{{ id }}</span></h1>
+            <form action="/fitnesschema/{{ id }}" method="get" id="fitness-schema-tables">
+                {% if fitnesschema.goal == 'Kracht' or fitnesschema.goal == 'Spieropbouw' %}
+                    
+                <!-- Fitnessschema layout voor kracht en spierbouw -->
+                    {% for day in range(1, fitnesschema.number_of_days + 1) %}
+                        <table border="1px" width="90%" class="table1">
+                            <thead>
+                                <tr>
+                                    <td colspan="3" style="text-align: center;">Dag {{ day }}</td>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td colspan="3"></td>
+                                
+                            </tr>
+                            <thead>
+                                <tr>
+                                    <td colspan="3" style="text-align: center;">{{ fitnesschema.level }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ fitnesschema.goal }} </td>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td colspan="3"></td>
+                                
+                            </tr>
+                            <tbody>
+                                <tr>
+                                    <th style="width: 100px;"> </th>
+                                    <th style="width: 150px; text-align: center; font-size: 1.2em; font-weight: bold;">Oefeningen</th>
+                                    <th style="width: 200px; text-align: center; font-size: 1.2em; font-weight: bold;">Aantal sets</th>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Warming_up</td>
+                                    <td style="text-align: left";>
+                                        <ul>
+                                            {% for exercise in warming_up_exercises[day] %}
+                                                <li>{{ exercise.name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        {{ sets.warming_up_sets }}
+                                    </td> 
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Stretching</td>
+                                    <td style="text-align: left";>
+                                        <ul>
+                                            {% for exercise in stretching_exercises[day] %}
+                                                <li>{{ exercise.name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        {{ sets.stretching_sets }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Strength_training</td>
+                                    <td style="text-align: left";>
+                                        <ul>
+                                            {% for exercise in strength_training_exercises[day] %}
+                                                <li>{{ exercise.name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        {{ sets.strength_training_sets }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Cardio</td>
+                                    <td style="text-align: left";>
+                                        <ul>
+                                            {% for exercise in cardio_exercises[day] %}
+                                                <li>{{ exercise.name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        {{ sets.cardio_sets }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Cooling_down</td>
+                                    <td style="text-align: left";>
+                                        <ul>
+                                            {% for exercise in cooling_down_exercises[day] %}
+                                                <li>{{ exercise.name }}</li>
+                                            {% endfor %}
+                                    </ul>
+                                    </td>
+                                    <td>
+                                        {{ sets.cooling_down_sets }}
+                                    </td>  
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <!-- Schema met instructies en url van de oefeinigen-->
+                        <table border="1px" width="90%" class="table2">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; font-size: 1.2em; font-weight: bold;">Oefeningen</th>
+                                    <th style="text-align: center; font-size: 1.2em; font-weight: bold;">Instructies</th>
+                                    <th style="text-align: center; font-size: 1.2em; font-weight: bold;">url</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for exercise in warming_up_exercises[day] %}
+                                <tr>
+                                    <td>
+                                        {{ exercise.name }}<br>
+                                    </td>
+                                    <td>
+                                        {{ exercise.instructions | safe }}<br>
+                                    </td>
+                                    <td>
+                                        <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% for exercise in stretching_exercises[day] %}
+                                <tr>
+                                    <td>
+                                        {{ exercise.name }}<br>
+                                    </td>
+                                    <td>
+                                        {{ exercise.instructions | safe }}<br>
+                                    </td>
+                                    <td>
+                                        <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% for exercise in strength_training_exercises[day] %}
+                                <tr>
+                                    <td>
+                                        {{ exercise.name }}<br>
+                                    </td>
+                                    <td>
+                                        {{ exercise.instructions | safe }}<br>
+                                    </td>
+                                    <td>
+                                        <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% for exercise in cardio_exercises[day] %}
+                                <tr>
+                                    <td>
+                                        {{ exercise.name }}<br>
+                                    </td>
+                                    <td>
+                                        {{ exercise.instructions | safe }}<br>
+                                    </td>
+                                    <td>
+                                        <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% for exercise in cooling_down_exercises[day] %}
+                                <tr>
+                                    <td>
+                                        {{ exercise.name }}<br>
+                                    </td>
+                                    <td>
+                                        {{ exercise.instructions | safe }}<br>
+                                    </td>
+                                    <td>
+                                        <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    {% endfor %}
+                {% endif %}
+
+                {% if fitnesschema.goal == 'Conditie' %}
+
+                    <!-- Fitnesschema layout voor cardio -->
+                    {% for day in range(1, fitnesschema.number_of_days + 1) %}
+                    <table border="1px" width="90%" class="table1">
+                        <thead>
+                            <tr>
+                                <td colspan="3" style="text-align: center;">Dag {{ day }}</td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td colspan="3"></td>
+                        </tr>
+                        <thead>
+                            <tr>
+                                <td colspan="3" style="text-align: center;">{{ fitnesschema.level }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ fitnesschema.goal }} </td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tbody>
+                            <tr>
+                                <th style="width: 100px;"> </th>
+                                <th style="width: 150px; text-align: center; font-size: 1.2em; font-weight: bold;">Oefeningen</th>
+                                <th style="width: 200px; text-align: center; font-size: 1.2em; font-weight: bold;">Aantal sets</th>
+                                
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Warming_up</td>
+                                <td style="text-align: left";>
+                                    <ul>
+                                        {% for exercise in warming_up_exercises[day] %}
+                                            <li>{{ exercise.name }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    {{ sets.warming_up_sets }}
+                                </td>              
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Cardio</td>
+                                <td style="text-align: left";>
+                                    <ul>
+                                        {% for exercise in cardio_exercises[day] %}
+                                            <li>{{ exercise.name }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    {{ sets.cardio_sets }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-size: 1.2em; font-weight: bold;">Cooling_down</td>
+                                <td style="text-align: left";>
+                                    <ul>
+                                        {% for exercise in cooling_down_exercises[day] %}
+                                            <li>{{ exercise.name }}</li>
+                                        {% endfor %}
+                                </ul>
+                                </td>
+                                <td>
+                                    {{ sets.cooling_down_sets }}
+                                </td>  
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Schema met instructies en url van de oefeinigen-->
+                    <table border="1px" width="90%" class="table2">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; font-size: 1.2em; font-weight: bold;">Oefeningen</th>
+                                <th style="text-align: center; font-size: 1.2em; font-weight: bold;">Instructies</th>
+                                <th style="text-align: center; font-size: 1.2em; font-weight: bold;">url</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exercise in warming_up_exercises[day] %}
+                            <tr>
+                                <td>
+                                    {{ exercise.name }}<br>
+                                </td>
+                                <td>
+                                    {{ exercise.instructions | safe }}<br>
+                                </td>
+                                <td>
+                                    <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% for exercise in cardio_exercises[day] %}
+                            <tr>
+                                <td>
+                                    {{ exercise.name }}<br>
+                                </td>
+                                <td>
+                                    {{ exercise.instructions | safe }}<br>
+                                </td>
+                                <td>
+                                    <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% for exercise in cooling_down_exercises[day] %}
+                            <tr>
+                                <td>
+                                    {{ exercise.name }}<br>
+                                </td>
+                                <td>
+                                    {{ exercise.instructions | safe }}<br>
+                                </td>
+                                <td>
+                                    <a href="{{ exercise.gifUrl }}">Link</a><br>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    {% endfor %}
+                {% endif %}
+
+                <br>
+
+                <!-- Schema met overwegingen -->
+                {% for set in all_sets %}
+                    {% if set.goal == fitnesschema.goal and set.level == fitnesschema.level %}
+                        <table border="1px" width="90%" class="table3">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; font-size: 1.2em; font-weight: bold;">Overwegingen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {{  set.considerations  }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    {% endif %}
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block sidebar %} {% endblock %}
